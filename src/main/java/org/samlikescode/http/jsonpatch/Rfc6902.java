@@ -20,10 +20,10 @@ public final class Rfc6902 {
             p -> checkMemberNotNull(p, "path is required for all operations");
 
     private static final Function<JsonNode, JsonNode> VALUE_VALIDATOR =
-            v -> checkMemberNotNull(v, "value is required for add operations");
+            v -> checkMemberNotNull(v, "value is required for this operation");
 
     private static final Function<JsonPointer, JsonPointer> FROM_VALIDATOR =
-            f -> checkMemberNotNull(f, "from is required for move operations");
+            f -> checkMemberNotNull(f, "from is required for this operation");
 
     private static final Function<Operation.Builder, Operation.Builder> BASE_VALIDATOR =
             o -> {
