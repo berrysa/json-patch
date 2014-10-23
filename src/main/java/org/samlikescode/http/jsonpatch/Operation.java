@@ -135,8 +135,6 @@ public class Operation {
             if (result == null)
                 throw new OperationFormatException("Unsupported op value: " + value);
             return result;
-
-
         }
     }
 }
