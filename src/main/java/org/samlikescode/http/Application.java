@@ -1,7 +1,7 @@
-package org.samlikescode;
+package org.samlikescode.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.samlikescode.databind.CustomObjectMapper;
+import org.samlikescode.http.config.jackson.databind.CustomObjectMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;

@@ -1,0 +1,2 @@
+- rename the project to be samlikescode since json-patch lives inside of it right now.
+-- the jsonpatch package should be able to stand alone as a module

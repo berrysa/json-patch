@@ -1,4 +1,4 @@
-package org.samlikescode.sandbox;
+package org.samlikescode.http.api.sandbox;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

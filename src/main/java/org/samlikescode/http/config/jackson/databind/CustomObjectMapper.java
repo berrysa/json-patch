@@ -1,4 +1,4 @@
-package org.samlikescode.databind;
+package org.samlikescode.http.config.jackson.databind;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;

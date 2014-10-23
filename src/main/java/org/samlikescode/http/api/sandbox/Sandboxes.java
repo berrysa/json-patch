@@ -1,13 +1,10 @@
-package org.samlikescode.sandbox;
+package org.samlikescode.http.api.sandbox;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.joda.time.Instant;
-import org.samlikescode.http.JsonPatchDocument;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,16 +40,13 @@ public class Sandboxes {
     }
 
     @RequestMapping(value = "/{sandboxId}", method = PATCH, consumes = APPLICATION_JSON)
-    public SandboxObject patchSandboxObject(@PathVariable UUID sandboxId, JsonPatchDocument document) {
+    public SandboxObject patchSandboxObject(@PathVariable UUID sandboxId) {
         ImmutableMap<UUID, SandboxObject> db = database.build();
 
         if (db.containsKey(sandboxId)) {
             SandboxObject priorRepresentation = db.get(sandboxId);
 
             ValueNode node = JsonNodeFactory.instance.pojoNode(priorRepresentation);
-            JsonNode endpointToPatch = node.at(document.getPath());
-
-            JsonNodeType nodeType = endpointToPatch.getNodeType();
 
             // todo: should be able to conjure up something cool here
 
