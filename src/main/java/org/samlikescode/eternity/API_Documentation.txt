@@ -73,7 +73,7 @@ CREATING A NEW MODEL
                                     "regex": "^\w"
                                 }
                                 {
-                                    "field": "first",
+                                    "field": "last",
                                     "required": false,
                                     "regex": "^\w"
                                 },
@@ -171,9 +171,9 @@ CREATING A NEW MODEL
                                 "regex": "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"
                             }
 
-                            Ex: An email field without validation.
+                            Ex: A description field with no validation.
                             {
-                                "field": "email"
+                                "field": "description"
                             }
 
                     COLLECTION
@@ -186,7 +186,7 @@ CREATING A NEW MODEL
                                 "type": "collection",   <- Required. Identifies the type as a collection of representations.
                                 "required": Boolean,    <- Ignored. Not sure how to handle this yet, or what a required collection would mean / how it would be enforced.
                                 "member": {             <- Required. Defines the structure of the collection's members.
-                                    "type": String,     <- Required. See supported types. Does not support "collection" (nested collections).
+                                    "type": String,     <- Required. See supported types. Nested collections are discouraged since they are difficult to query and operate on.
                                     "regex": String,    <- Optional. A REGEX expression to apply to string types for validation. Default: null.
                                     "fields": Array,    <- Required if type is "object". Defines validation of inner fields for a subordinate object. Default: null.
                                 }
@@ -250,7 +250,7 @@ CREATING A NEW MODEL
                         STRUCTURE
                             {
                                 "field": String,        <- Required. Identifies the name of the field.
-                                "type": "number",      <- Required. Identifies the field as a number.
+                                "type": "number",       <- Required. Identifies the field as a number.
                             }
 
                             Ex: An age field.
