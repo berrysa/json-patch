@@ -1,0 +1,680 @@
+EXAMPLE USE CASES:
+    1. A new service wants to set up a model for storing profiles
+        CLIENT REQUIREMENTS:
+            Model:
+                {
+                    "name": {
+                        "first": "...",
+                        "last": "..."
+                    },
+                    "email": "...",
+                    "favoriteShoe": "...",
+                    "shoeSize": 7,
+                    "shoes": [
+                        {
+                            "brand": "...",
+                            "size": 7,
+                        }
+                    ],
+                    "active": true
+                }
+
+            Validation:
+                - first name is required and must be alphanumeric
+                - last name is optional and must be alphanumeric
+                - email is required, unique, and must be valid email format
+                - favoriteShoe is optional with no validation
+                - shoeSize is required if favoriteShoe is provided
+                - shoes are not required to be populated
+                - active will always have a value
+
+        INFINITY SUPPORT:
+            - model: no problem
+            - validation:
+                - first name, last name, shoes, active, and favoriteShoe: no problem
+                - shoeSize: not supported. Must be enforced by the client.
+                - email: required and format can be enforced, but unique must be enforced by the client
+
+        REGISTERING "PROFILE" AS A MODEL:
+            1. Create the model
+                REQUEST:
+                    POST /infinity/beings/profileservice/models
+                    {
+                        "name": "profile",
+                        "fields": [
+                            {
+                                "field": "name",
+                                "type": "object",
+                                "fields": [
+                                    {
+                                        "field": "first",
+                                        "required": true,
+                                        "regex": "^\w"
+                                    }
+                                    {
+                                        "field": "first",
+                                        "required": false,
+                                        "regex": "^\w"
+                                    },
+                                ]
+                            },
+                            {
+                                "field": "email",
+                                "required": true,
+                                "regex": "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"
+                            },
+                            {
+                                "field": "favoriteShoe",
+                                "required": false,
+                            },
+                            {
+                                "field": "shoeSize",
+                                "required": false,
+                                "type": "number"
+                            },
+                            {
+                                "field": "shoes",
+                                "required": true,
+                                "type": "collection",
+                                "member": {
+                                    "type": "object",
+                                    "fields": [
+                                        {
+                                            "field": "brand",
+                                            "required": true,
+                                            "regex": "^\w$"
+                                        },
+                                        {
+                                            "field": "size",
+                                            "required": true,
+                                            "type": "number"
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "field": "active",
+                                "required": true,
+                                "type": "boolean"
+                            }
+                        ]
+                    }
+                RESPONSE:
+                    201
+                    Headers: [
+                        {key: "Location", value: "/infinity/beings/profileservice/models/21343rdf332r3fer2422"},
+                        {key: "Repository-Location", value: "/infinity/beings/profileservice/profiles"}
+                    ]
+                    {
+                        "id": "21343rdf332r3fer2422"
+                        "name": "profile",
+                        "fields": [
+                            {
+                                "field": "name",
+                                "required": true,
+                            },
+                            {
+                                "field": "name.first",
+                                "required": true,
+                                "regex": "^\w"
+                            },
+                            {
+                                "field": "name.last",
+                                "required": false,
+                                "regex": "^\w"
+                            },
+                            {
+                                "field": "email",
+                                "required": true,
+                                "regex": "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"
+                            },
+                            {
+                                "field": "favoriteShoe",
+                                "required": false,
+                            },
+                            {
+                                "field": "shoeSize",
+                                "required": false,
+                                "type": "number"
+                            },
+                            {
+                                "field": "shoes",
+                                "required": false,
+                                "type": "collection"
+                            },
+                            {
+                                "field": "shoes[].brand",
+                                "required": true,
+                                "regex": "^\w"
+                            },
+                            {
+                                "field": "shoes[].size",
+                                "required": true,
+                                "type": "number"
+                            },
+                            {
+                                "field": "active",
+                                "required": true,
+                                "type": "boolean"
+                            }
+                        ]
+                    }
+
+            2. Retrieve the new model
+                REQUEST:
+                    GET  /infinity/beings/profileservice/models/21343rdf332r3fer2422
+                RESPONSE:
+                    {
+                        "id": "21343rdf332r3fer2422"
+                        "name": "profile",
+                        "fields": [
+                            {
+                                "field": "name",
+                                "required": true,
+                            },
+                            {
+                                "field": "name.first",
+                                "required": true,
+                                "regex": "^\w"
+                            },
+                            {
+                                "field": "name.last",
+                                "required": false,
+                                "regex": "^\w"
+                            },
+                            {
+                                "field": "email",
+                                "required": true,
+                                "regex": "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"
+                            },
+                            {
+                                "field": "favoriteShoe",
+                                "required": false,
+                            },
+                            {
+                                "field": "shoeSize",
+                                "required": false,
+                                "type": "number"
+                            },
+                            {
+                                "field": "shoes",
+                                "required": false,
+                                "type": "collection"
+                            },
+                            {
+                                "field": "shoes[].brand",
+                                "required": true,
+                                "regex": "^\w"
+                            },
+                            {
+                                "field": "shoes[].size",
+                                "required": true,
+                                "type": "number"
+                            },
+                            {
+                                "field": "active",
+                                "required": true,
+                                "type": "boolean"
+                            }
+                        ]
+                    }
+
+        ADDING A REPRESENTATION TO THE NEW MODEL
+            1. Add a profile
+                REQUEST:
+                    POST /infinity/beings/profileservice/profiles
+                    {
+                        "name": {
+                            "first": "Sam"
+                        },
+                        "email": "samlikescode@gmail.com",
+                        "active": true
+                    }
+                RESPONSE:
+                    201
+                    Headers: [{key: "Location", value: "/infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011"}]
+                    {
+                        "id": "507f1f77bcf86cd799439011"
+                        "name": {
+                            "first": "Sam",
+                            "last": null
+                        },
+                        "email": "samlikescode@gmail.com",
+                        "favoriteShoe": null,
+                        "shoeSize": null,
+                        "shoes": [],
+                        "active": true
+                    }
+
+            2. Retrieve the profile
+                REQUEST:
+                    GET /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011
+                RESPONSE:
+                    200
+                    {
+                        "id": "507f1f77bcf86cd799439011"
+                        "name": {
+                            "first": "Sam",
+                            "last": null
+                        },
+                        "email": "samlikescode@gmail.com",
+                        "favoriteShoe": null,
+                        "shoeSize": null,
+                        "shoes": [],
+                        "active": true
+                    }
+
+            3. Retrieve all profiles
+                REQUEST:
+                    GET  /infinity/beings/profileservice/profiles
+                RESPONSE:
+                    {
+                        data: [
+                            {
+                                "id": "507f1f77bcf86cd799439011"
+                                "name": {
+                                    "first": "Sam",
+                                    "last": null
+                                },
+                                "email": "samlikescode@gmail.com",
+                                "favoriteShoe": null,
+                                "shoeSize": null,
+                                "shoes": [],
+                                "active": true
+                            }
+                        ],
+                        errors: {"field": [], "global": null}
+                    }
+
+        PERFORMING FULL UPDATE ON A REPRESENTATION
+            1. Retrieve the profile to update
+                REQUEST:
+                    GET /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011
+                RESPONSE:
+                    200
+                    {
+                        "id": "507f1f77bcf86cd799439011"
+                        "name": {
+                            "first": "Sam",
+                            "last": null
+                        },
+                        "email": "samlikescode@gmail.com",
+                        "favoriteShoe": null,
+                        "shoeSize": null,
+                        "shoes": [],
+                        "active": true
+                    }
+
+            2. Update last name
+                REQUEST:
+                    PUT /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011
+                    {
+                        "id": "507f1f77bcf86cd799439011"
+                        "name": {
+                            "first": "Sam",
+                            "last": "Berry"
+                        },
+                        "email": "samlikescode@gmail.com",
+                        "favoriteShoe": null,
+                        "shoeSize": null,
+                        "shoes": [],
+                        "active": true
+                    }
+                RESPONSE:
+                    200
+                    {
+                        "id": "507f1f77bcf86cd799439011"
+                        "name": {
+                            "first": "Sam",
+                            "last": "Berry"
+                        },
+                        "email": "samlikescode@gmail.com",
+                        "favoriteShoe": null,
+                        "shoeSize": null,
+                        "shoes": [],
+                        "active": true
+                    }
+
+        PERFORMING A PARTIAL UPDATE ON A REPRESENTATION
+            1. Retrieve the profile to update (optional)
+                REQUEST:
+                    GET /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011
+                RESPONSE:
+                    200
+                    {
+                        "id": "507f1f77bcf86cd799439011"
+                        "name": {
+                            "first": "Sam",
+                            "last": null
+                        },
+                        "email": "samlikescode@gmail.com",
+                        "favoriteShoe": null,
+                        "shoeSize": null,
+                        "shoes": [],
+                        "active": true
+                    }
+
+            2a. Update last name
+                REQUEST:
+                    PATCH /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011
+                    Headers: [{key: "Content-Type", value: "application/json-patch"}]
+                    {
+                        "op": "replace",
+                        "path": "/name/last",
+                        "value": "Berry"
+                    }
+                RESPONSE:
+                    200
+                    {
+                        "id": "507f1f77bcf86cd799439011"
+                        "name": {
+                            "first": "Sam",
+                            "last": "Berry"
+                        },
+                        "email": "samlikescode@gmail.com",
+                        "favoriteShoe": null,
+                        "shoeSize": null,
+                        "shoes": [],
+                        "active": true
+                    }
+
+            2b. Update name
+                REQUEST:
+                    PATCH /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011
+                    Headers: [{key: "Content-Type", value: "application/json-patch"}]
+                    {
+                        "op": "replace",
+                        "path": "/name",
+                        "value": {
+                            "first": "Sam",
+                            "last": "Berry"
+                        }
+                    }
+                RESPONSE:
+                    200
+                    {
+                        "id": "507f1f77bcf86cd799439011"
+                        "name": {
+                            "first": "Sam",
+                            "last": "Berry"
+                        },
+                        "email": "samlikescode@gmail.com",
+                        "favoriteShoe": null,
+                        "shoeSize": null,
+                        "shoes": [],
+                        "active": true
+                    }
+
+            2c. Update shoes
+                REQUEST:
+                    PATCH /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011
+                    Headers: [{key: "Content-Type", value: "application/json-patch"}]
+                    {
+                        "op": "replace",
+                        "path": "/shoes",
+                        "value": [
+                            {
+                                "brand": "Nike",
+                                "size": "13"
+                            }
+                        ]
+                    }
+                RESPONSE:
+                    200
+                    {
+                        "id": "507f1f77bcf86cd799439011"
+                        "name": {
+                            "first": "Sam",
+                            "last": null
+                        },
+                        "email": "samlikescode@gmail.com",
+                        "favoriteShoe": null,
+                        "shoeSize": null,
+                        "shoes": [
+                            {
+                                "id": "2344234j34h3h42",
+                                "brand": "Nike",
+                                "size": "13"
+                            }
+                        ],
+                        "active": true
+                    }
+
+            2d. Update shoes
+                REQUEST:
+                    PATCH /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011
+                    Headers: [{key: "Content-Type", value: "application/json-patch"}]
+                    {
+                        "op": "add",
+                        "path": "/shoes",
+                        "value": {
+                            "brand": "Nike",
+                            "size": "13"
+                        }
+                    }
+                RESPONSE:
+                    200
+                    {
+                        "id": "507f1f77bcf86cd799439011"
+                        "name": {
+                            "first": "Sam",
+                            "last": null
+                        },
+                        "email": "samlikescode@gmail.com",
+                        "favoriteShoe": null,
+                        "shoeSize": null,
+                        "shoes": [
+                            {
+                                "id": "2344234j34h3h42",
+                                "brand": "Nike",
+                                "size": "13"
+                            }
+                        ],
+                        "active": true
+                    }
+
+            3d. Retrieve shoe
+                REQUEST:
+                    GET /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011/shoes/2344234j34h3h42
+                RESPONSE:
+                    200
+                    {
+                        "id": "2344234j34h3h42",
+                        "brand": "Nike",
+                        "size": "13"
+                    }
+
+        UPDATING A MODEL: ADDING A FIELD
+            1. Retrieve the model (optional)
+                REQUEST:
+                   GET  /infinity/beings/profileservice/models/21343rdf332r3fer2422
+                RESPONSE:
+                    200
+                    {
+                        "id": "21343rdf332r3fer2422"
+                        "name": "profile",
+                        "fields": [
+                           {
+                               "id": "424234dew34rw3422",
+                               "field": "name",
+                               "required": true,
+                           },
+                           {
+                               "id": "d543534565436fvc535",
+                               "field": "name.first",
+                               "required": true,
+                               "regex": "^\w"
+                           },
+                           {
+                               "id": "35476b7h453g23gf",
+                               "field": "name.last",
+                               "required": false,
+                               "regex": "^\w"
+                           },
+                           {
+                               "id": "8768568754b35673f",
+                               "field": "email",
+                               "required": true,
+                               "regex": "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"
+                           },
+                           {
+                               "id": "c4354543c5b55n69",
+                               "field": "favoriteShoe",
+                               "required": false,
+                           },
+                           {
+                               "id": "2546567562g4552245",
+                               "field": "shoeSize",
+                               "required": false,
+                               "type": "number"
+                           },
+                           {
+                               "id": "2f34c43f3434t5",
+                               "field": "shoes",
+                               "required": false,
+                               "type": "collection"
+                           },
+                           {
+                               "id": "34532r34r3434t",
+                               "field": "shoes[].brand",
+                               "required": true,
+                               "regex": "^\w"
+                           },
+                           {
+                               "id": "2345342534terw5345",
+                               "field": "shoes[].size",
+                               "required": true,
+                               "type": "number"
+                           },
+                           {
+                               "id": "2545342trt34",
+                               "field": "active",
+                               "required": true,
+                               "type": "boolean"
+                           }
+                        ]
+                    }
+
+            2a. Add birthday field
+                REQUEST:
+                    PATCH /infinity/beings/profileservice/models/21343rdf332r3fer2422
+                    Headers: [{key: "Content-Type", value: "application/json-patch"}]
+                    {
+                        "op": "add",
+                        "path": "/fields",
+                        "value": {
+                            "field": "birthday",
+                            "required": false,
+                            "type": "number"
+                        }
+                    }
+                RESPONSE:
+                    200
+                    {
+                        "id": "21343rdf332r3fer2422"
+                        "name": "profile",
+                        "fields": [
+                           {
+                               "id": "424234dew34rw3422",
+                               "field": "name",
+                               "required": true,
+                           },
+                           {
+                               "id": "d543534565436fvc535",
+                               "field": "name.first",
+                               "required": true,
+                               "regex": "^\w"
+                           },
+                           {
+                               "id": "35476b7h453g23gf",
+                               "field": "name.last",
+                               "required": false,
+                               "regex": "^\w"
+                           },
+                           {
+                               "id": "8768568754b35673f",
+                               "field": "email",
+                               "required": true,
+                               "regex": "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"
+                           },
+                           {
+                               "id": "c4354543c5b55n69",
+                               "field": "favoriteShoe",
+                               "required": false,
+                           },
+                           {
+                               "id": "2546567562g4552245",
+                               "field": "shoeSize",
+                               "required": false,
+                               "type": "number"
+                           },
+                           {
+                               "id": "2f34c43f3434t5",
+                               "field": "shoes",
+                               "required": false,
+                               "type": "collection"
+                           },
+                           {
+                               "id": "34532r34r3434t",
+                               "field": "shoes[].brand",
+                               "required": true,
+                               "regex": "^\w"
+                           },
+                           {
+                               "id": "2345342534terw5345",
+                               "field": "shoes[].size",
+                               "required": true,
+                               "type": "number"
+                           },
+                           {
+                               "id": "2545342trt34",
+                               "field": "active",
+                               "required": true,
+                               "type": "boolean"
+                           },
+                           {
+                               "id": "876876dds8s7687a",
+                               "field": "birthday",
+                               "required": false,
+                               "type": "number"
+                           }
+                        ]
+                    }
+
+            2b. Add birthday field
+                REQUEST:
+                    POST /infinity/beings/profileservice/models/21343rdf332r3fer2422/fields
+                    {
+                        "field": "birthday",
+                        "required": false,
+                        "type": "number"
+                    }
+                RESPONSE:
+                    201
+                    Headers: [{key: "Location", value: "/infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011/fields/876876dds8s7687a"}]
+                    {
+                       "id": "876876dds8s7687a",
+                       "field": "birthday",
+                       "required": false,
+                       "type": "number"
+                    }
+
+---------------------------------
+REGISTERING MODELS
+
+    GENERAL RULES:
+        - id's cannot be specified on creation. Every model will have an id returned after creation.
+
+    VALIDATION:
+        - only supports single field validation. Conditional validation is not supported.
+        - REGEX validation is not supported for collection, boolean, or number types
+
+    //todo:
+    - define collection operations (including subordinate collections)
+
+---------------------------------
+API RULES
+//todo
+    - any successful POST will return 201 with a Location
+    - PATCH operations follow RFC 6902
+    - Only supports JSON

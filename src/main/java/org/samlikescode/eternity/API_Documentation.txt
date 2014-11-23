@@ -1,0 +1,202 @@
+-------------------------------------------------------------------------
+INFINITY: A dynamic RESTful data store managed entirely through HTTP APIs
+-------------------------------------------------------------------------
+"Infinity is the cosmic entity that defines the entirety of space and its occupants." - Marvel //todo: get a quote from one of the Infinity comics
+
+--------
+OVERVIEW
+--------
+Infinity is built on the philosophy that any client should be able to customize and manage data without interruption or downtime. Infinity accomplishes
+this goal by offering an API with a set of consistent standards that follow RESTful principles. Creating, updating, and deleting of models can be done
+via HTTP requests with immediate results. Adding, updating, and deleting data that lives inside of a model also is accomplished via the API.
+
+The Infinity API itself is dynamic, providing consumer specific URIs for managing data. When a model is added, a resource is created for servicing the
+model.
+
+    TERMS
+        - model: The definition of a supported representation. Can be thought of as a "table" definition.
+        - being: a user of Infinity.
+
+-------------------
+REGISTERING A BEING
+-------------------
+// currently incomplete and subject to change
+In order to authenticate and send requests to Infinity one must be registered as a being. Registering as a being of Infinity can be accomplished through
+the /beings resource and should only need to be done once.
+    1. Request a permanent auth token
+        REQUEST:
+            POST /infinity/beings
+            {
+                "username": String  <- Required. Will be used as the context root for all models of the being.
+            }
+        RESPONSE:
+            201
+            Headers: [{key: "Location", value: "/infinity/beings/{username}"]
+            {
+                "token": String     <- This token is required to authenticate any request under /beings/{username}
+            }
+
+--------------------
+CREATING A NEW MODEL
+--------------------
+    Models will be used to keep representations under a specific path a consistent structure. The Infinity API will use
+    these descriptions to validate incoming requests. The API can validate requiredness and format (via REGEX) of any
+    field. Conditional validation such as, "Field A is required if field B is present", or any other implementation
+    specific validation outside of the capabilities of REGEX must be enforced by the implementer.
+
+    Models can be created through the /models resource.
+
+    DEFINING A MODEL
+        A model is defined by a name and a collection of fields.
+
+        NAME
+            The name of a model is used for identification in future requests. The name provided will be pluralized
+            non-intelligently (simply appending 's' to the end) and a resource will be created at the root of the being's
+            URI. E.g., if being "dudeBroApp" creates a model with "profile" as the name, /infinity/beings/dudeBroApp/profiles
+            is created as an operable resource.
+
+        FIELDS
+            Fields define the complete structure of a model. Fields can be flagged as required and constraints can be applied
+            via REGEX, but no further validation is offered.
+
+            STRUCTURE
+                {
+                    "field": String,        <- Required. Identifies the name of the field.
+                    "type": String,         <- Optional. Defines the type of the field. Default: "string".
+                    "required": Boolean,    <- Optional. Is the field required. Default: false.
+                    "regex": String,        <- Optional. A REGEX expression to apply to string types (ignored for all other types) for validation. Default: null.
+                    "fields": Array,        <- Required if type is "object", ignored otherwise. Defines validation of inner fields for a subordinate object. Default: null.
+                    "member": Object        <- Required if type is "collection", ignored otherwise. Defines validation for the collection's members. Default: null.
+                }
+
+            ATTRIBUTES
+                The available attributes for specifying fields.
+
+                FIELD
+                    A required attribute that defines the name of the field.
+
+                TYPE
+                    An optional "type" attribute is available to describe fields. Unless otherwise specified, the rules described in FIELDS STRUCTURE
+                    apply to all field types. Supported types are:
+                        - string (default)
+                        - collection
+                        - object
+                        - boolean
+                        - number
+
+                    STRING
+                        The string type identifies a field as being a String. This is the default type if none is specified. REGEX validation
+                        can be applied to string fields.
+
+                        STRUCTURE
+                            {
+                                "field": String,    <- Required. Identifies the name of the field.
+                                "type": "string",   <- Optional. Identifies the type as a string. This is redundant and unnecessary since it is the default type.
+                                "regex": String     <- Optional. Defines an expression to apply on all incoming representations to determine if it is valid or not. Default: null.
+                            }
+
+                            Ex: An email field with validation.
+                            {
+                                "field": "email",
+                                "regex": "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"
+                            }
+
+                            Ex: An email field without validation.
+                            {
+                                "field": "email"
+                            }
+
+                    COLLECTION
+                        The collection type identifies a field as an array of representations. If a field is labeled as a collection,
+                        it's member structure must be defined.
+
+                        STRUCTURE
+                            {
+                                "field": String,        <- Required. Identifies the name of the field.
+                                "type": "collection",   <- Required. Identifies the type as a collection of representations.
+                                "required": Boolean,    <- Ignored. Not sure how to handle this yet, or what a required collection would mean / how it would be enforced.
+                                "member": {             <- Required. Defines the structure of the collection's members.
+                                    "type": String,     <- Required. See supported types. Does not support "collection" (nested collections).
+                                    "regex": String,    <- Optional. A REGEX expression to apply to string types for validation. Default: null.
+                                    "fields": Array,    <- Required if type is "object". Defines validation of inner fields for a subordinate object. Default: null.
+                                }
+                            }
+
+                            Ex: A collection of objects.
+                                {
+                                    "field": "favorites",
+                                    "type": "collection",
+                                    "member": {
+                                        "type": "object",
+                                        "fields": [
+                                            {
+                                                "field": "description",
+                                                "required": true,
+                                                "regex": "^.{50}$"
+                                            }
+                                        ]
+                                    }
+                                }
+
+                            Ex: A collection of strings.
+                                {
+                                    "field": "favorites",
+                                    "type": "collection",
+                                    "member": {
+                                        "type": "string",
+                                        "regex": "^.{50}$"
+                                    }
+                                }
+
+                    OBJECT
+                        The object type defines a field as an object with inner fields. If a field is labeled as an object, it's fields
+                        must be defined.
+
+                        STRUCTURE
+                            {
+                                "field": String,    <- Required. Identifies the name of the field.
+                                "type": "object",   <- Required. Identifies the field as an object.
+                                "fields": [...]     <- Required. Defines each field of the object. See FIELD STRUCTURE.
+                            }
+
+                    BOOLEAN
+                        The boolean type defines a field as a boolean value.
+
+                        STRUCTURE
+                            {
+                                "field": String,        <- Required. Identifies the name of the field.
+                                "type": "boolean",      <- Required. Identifies the field as a boolean.
+                            }
+
+                            Ex: An active field.
+                                {
+                                    "field": "active",
+                                    "type": "boolean"
+                                }
+
+                    NUMBER
+                        The number type defines a field as a numeric value. Supports decimal values.
+
+                        STRUCTURE
+                            {
+                                "field": String,        <- Required. Identifies the name of the field.
+                                "type": "number",      <- Required. Identifies the field as a number.
+                            }
+
+                            Ex: An age field.
+                                {
+                                    "field": "age",
+                                    "type": "number"
+                                }
+
+                            Ex: A birthday field (timestamp as millis).
+                                {
+                                    "field": "birthday",
+                                    "type": "number"
+                                }
+
+                            Ex: A price field.
+                                {
+                                    "field": "price",
+                                    "type": "number"
+                                }
