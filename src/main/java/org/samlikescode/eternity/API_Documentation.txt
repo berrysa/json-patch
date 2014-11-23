@@ -1,21 +1,26 @@
 -------------------------------------------------------------------------
 INFINITY: A dynamic RESTful data store managed entirely through HTTP APIs
 -------------------------------------------------------------------------
-"Infinity is the cosmic entity that defines the entirety of space and its occupants." - Marvel //todo: get a quote from one of the Infinity comics
+"Infinity is the cosmic entity that defines the entirety of space and its occupants." - Marvel Wiki //todo: get a quote from one of the Infinity comics
 
 --------
 OVERVIEW
 --------
 Infinity is built on the philosophy that any client should be able to customize and manage data without interruption or downtime. Infinity accomplishes
 this goal by offering an API with a set of consistent standards that follow RESTful principles. Creating, updating, and deleting of models can be done
-via HTTP requests with immediate results. Adding, updating, and deleting data that lives inside of a model also is accomplished via the API.
+via HTTP requests with immediate results. Managing model data is predictive and consistent. Retrieving data can be broad or precise. Discovery is encouraged,
+any information provided in this document should be acquirable through the API.
 
-The Infinity API itself is dynamic, providing consumer specific URIs for managing data. When a model is added, a resource is created for servicing the
-model.
+The Infinity API itself is dynamic providing consumer specific URIs for managing data. For every model there is a URI. Every model can be filtered by any of
+it's attributes with the same rule applying to it's attributes' attributes--and so on.
 
-    TERMS
-        - model: The definition of a supported representation. Can be thought of as a "table" definition.
-        - being: a user of Infinity.
+DEFINITIONS
+    - model: The definition of a supported representation. Can be thought of as a "table" definition. The accepted input and return structure
+             of a set(http://en.wikipedia.org/wiki/Set_%28mathematics%29#Describing_sets) of information that relates to a common meaning.
+             //todo important to URI syntax. link to suggested data modeling strategies.
+    - model data: data inside of a single model. Ex: the Profile model has 1k representations. Each unique representation is model data. The same term
+                  applies to collections of model data, because modal datas has a squiggly under it.
+    - being: a unique user of Infinity, likely an application or service.
 
 -------------------
 REGISTERING A BEING
@@ -39,25 +44,90 @@ the /beings resource and should only need to be done once.
 --------------------
 CREATING A NEW MODEL
 --------------------
-    Models will be used to keep representations under a specific path a consistent structure. The Infinity API will use
+    Models are used to keep collections of representations a consistent structure. The consistency of representations under a common resource provides
+    predictable extensibility and a reliable system. URIs are based on the structure of models and the names of their attributes. The Infinity API will use
     these descriptions to validate incoming requests. The API can validate requiredness and format (via REGEX) of any
-    field. Conditional validation such as, "Field A is required if field B is present", or any other implementation
-    specific validation outside of the capabilities of REGEX must be enforced by the implementer.
+    field.
 
-    Models can be created through the /models resource.
+    Conditional validation such as, "Field A is required if field B is present", or any other implementation specific validation outside of the capabilities
+    of REGEX must be enforced by the implementer. Validation is meant to provide length and character protection.
+
+    Models are created through the /models resource.
 
     DEFINING A MODEL
         A model is defined by a name and a collection of fields.
 
+        STRUCTURE
+            Ex:
+                POST /infinity/models
+                {
+                    "name": "profile",
+                    "fields": [
+                        {
+                            "field": "name",
+                            "type": "object",
+                            "fields": [
+                                {
+                                    "field": "first",
+                                    "required": true,
+                                    "regex": "^\w"
+                                }
+                                {
+                                    "field": "first",
+                                    "required": false,
+                                    "regex": "^\w"
+                                },
+                            ]
+                        },
+                        {
+                            "field": "email",
+                            "required": true,
+                            "regex": "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"
+                        },
+                        {
+                            "field": "favoriteShoe",
+                            "required": false,
+                        },
+                        {
+                            "field": "shoeSize",
+                            "required": false,
+                            "type": "number"
+                        },
+                        {
+                            "field": "shoes",
+                            "required": true,
+                            "type": "collection",
+                            "member": {
+                                "type": "object",
+                                "fields": [
+                                    {
+                                        "field": "brand",
+                                        "required": true,
+                                        "regex": "^\w$"
+                                    },
+                                    {
+                                        "field": "size",
+                                        "required": true,
+                                        "type": "number"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "field": "active",
+                            "required": true,
+                            "type": "boolean"
+                        }
+                    ]
+                }
+
         NAME
-            The name of a model is used for identification in future requests. The name provided will be pluralized
-            non-intelligently (simply appending 's' to the end) and a resource will be created at the root of the being's
-            URI. E.g., if being "dudeBroApp" creates a model with "profile" as the name, /infinity/beings/dudeBroApp/profiles
-            is created as an operable resource.
+            The name of a model is used for identification in future requests. The name provided will be pluralized non-intelligently (appending 's') and a
+            resource will be created at the root of Infinity. Ex: if a "cheese" model is added, an operable resource at /infinity/cheeses is created.
 
         FIELDS
-            Fields define the complete structure of a model. Fields can be flagged as required and constraints can be applied
-            via REGEX, but no further validation is offered.
+            Fields define the complete structure of a model. Fields can be flagged as required and constraints can be applied via REGEX. No further validation
+            is offered.
 
             STRUCTURE
                 {

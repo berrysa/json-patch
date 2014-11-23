@@ -38,7 +38,7 @@ EXAMPLE USE CASES:
         REGISTERING "PROFILE" AS A MODEL:
             1. Create the model
                 REQUEST:
-                    POST /infinity/beings/profileservice/models
+                    POST /infinity/models
                     {
                         "name": "profile",
                         "fields": [
@@ -102,8 +102,8 @@ EXAMPLE USE CASES:
                 RESPONSE:
                     201
                     Headers: [
-                        {key: "Location", value: "/infinity/beings/profileservice/models/21343rdf332r3fer2422"},
-                        {key: "Repository-Location", value: "/infinity/beings/profileservice/profiles"}
+                        {key: "Location", value: "/infinity/models/21343rdf332r3fer2422"},
+                        {key: "Repository-Location", value: "/infinity/profiles"}
                     ]
                     {
                         "id": "21343rdf332r3fer2422"
@@ -162,7 +162,7 @@ EXAMPLE USE CASES:
 
             2. Retrieve the new model
                 REQUEST:
-                    GET  /infinity/beings/profileservice/models/21343rdf332r3fer2422
+                    GET  /infinity/models/21343rdf332r3fer2422
                 RESPONSE:
                     {
                         "id": "21343rdf332r3fer2422"
@@ -222,7 +222,7 @@ EXAMPLE USE CASES:
         ADDING A REPRESENTATION TO THE NEW MODEL
             1. Add a profile
                 REQUEST:
-                    POST /infinity/beings/profileservice/profiles
+                    POST /infinity/profiles
                     {
                         "name": {
                             "first": "Sam"
@@ -232,7 +232,7 @@ EXAMPLE USE CASES:
                     }
                 RESPONSE:
                     201
-                    Headers: [{key: "Location", value: "/infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011"}]
+                    Headers: [{key: "Location", value: "/infinity/profiles/507f1f77bcf86cd799439011"}]
                     {
                         "id": "507f1f77bcf86cd799439011"
                         "name": {
@@ -248,7 +248,7 @@ EXAMPLE USE CASES:
 
             2. Retrieve the profile
                 REQUEST:
-                    GET /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011
+                    GET /infinity/profiles/507f1f77bcf86cd799439011
                 RESPONSE:
                     200
                     {
@@ -266,7 +266,7 @@ EXAMPLE USE CASES:
 
             3. Retrieve all profiles
                 REQUEST:
-                    GET  /infinity/beings/profileservice/profiles
+                    GET  /infinity/profiles
                 RESPONSE:
                     {
                         data: [
@@ -289,7 +289,7 @@ EXAMPLE USE CASES:
         PERFORMING FULL UPDATE ON A REPRESENTATION
             1. Retrieve the profile to update
                 REQUEST:
-                    GET /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011
+                    GET /infinity/profiles/507f1f77bcf86cd799439011
                 RESPONSE:
                     200
                     {
@@ -307,7 +307,7 @@ EXAMPLE USE CASES:
 
             2. Update last name
                 REQUEST:
-                    PUT /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011
+                    PUT /infinity/profiles/507f1f77bcf86cd799439011
                     {
                         "id": "507f1f77bcf86cd799439011"
                         "name": {
@@ -338,7 +338,7 @@ EXAMPLE USE CASES:
         PERFORMING A PARTIAL UPDATE ON A REPRESENTATION
             1. Retrieve the profile to update (optional)
                 REQUEST:
-                    GET /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011
+                    GET /infinity/profiles/507f1f77bcf86cd799439011
                 RESPONSE:
                     200
                     {
@@ -356,7 +356,7 @@ EXAMPLE USE CASES:
 
             2a. Update last name
                 REQUEST:
-                    PATCH /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011
+                    PATCH /infinity/profiles/507f1f77bcf86cd799439011
                     Headers: [{key: "Content-Type", value: "application/json-patch"}]
                     {
                         "op": "replace",
@@ -380,7 +380,7 @@ EXAMPLE USE CASES:
 
             2b. Update name
                 REQUEST:
-                    PATCH /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011
+                    PATCH /infinity/profiles/507f1f77bcf86cd799439011
                     Headers: [{key: "Content-Type", value: "application/json-patch"}]
                     {
                         "op": "replace",
@@ -407,7 +407,7 @@ EXAMPLE USE CASES:
 
             2c. Update shoes
                 REQUEST:
-                    PATCH /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011
+                    PATCH /infinity/profiles/507f1f77bcf86cd799439011
                     Headers: [{key: "Content-Type", value: "application/json-patch"}]
                     {
                         "op": "replace",
@@ -442,7 +442,7 @@ EXAMPLE USE CASES:
 
             2d. Update shoes
                 REQUEST:
-                    PATCH /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011
+                    PATCH /infinity/profiles/507f1f77bcf86cd799439011
                     Headers: [{key: "Content-Type", value: "application/json-patch"}]
                     {
                         "op": "add",
@@ -475,7 +475,7 @@ EXAMPLE USE CASES:
 
             3d. Retrieve shoe
                 REQUEST:
-                    GET /infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011/shoes/2344234j34h3h42
+                    GET /infinity/profiles/507f1f77bcf86cd799439011/shoes/2344234j34h3h42
                 RESPONSE:
                     200
                     {
@@ -487,7 +487,7 @@ EXAMPLE USE CASES:
         UPDATING A MODEL: ADDING A FIELD
             1. Retrieve the model (optional)
                 REQUEST:
-                   GET  /infinity/beings/profileservice/models/21343rdf332r3fer2422
+                   GET  /infinity/models/21343rdf332r3fer2422
                 RESPONSE:
                     200
                     {
@@ -557,7 +557,7 @@ EXAMPLE USE CASES:
 
             2a. Add birthday field
                 REQUEST:
-                    PATCH /infinity/beings/profileservice/models/21343rdf332r3fer2422
+                    PATCH /infinity/models/21343rdf332r3fer2422
                     Headers: [{key: "Content-Type", value: "application/json-patch"}]
                     {
                         "op": "add",
@@ -643,7 +643,7 @@ EXAMPLE USE CASES:
 
             2b. Add birthday field
                 REQUEST:
-                    POST /infinity/beings/profileservice/models/21343rdf332r3fer2422/fields
+                    POST /infinity/models/21343rdf332r3fer2422/fields
                     {
                         "field": "birthday",
                         "required": false,
@@ -651,7 +651,7 @@ EXAMPLE USE CASES:
                     }
                 RESPONSE:
                     201
-                    Headers: [{key: "Location", value: "/infinity/beings/profileservice/profiles/507f1f77bcf86cd799439011/fields/876876dds8s7687a"}]
+                    Headers: [{key: "Location", value: "/infinity/profiles/507f1f77bcf86cd799439011/fields/876876dds8s7687a"}]
                     {
                        "id": "876876dds8s7687a",
                        "field": "birthday",
