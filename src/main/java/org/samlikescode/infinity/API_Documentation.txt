@@ -95,7 +95,6 @@ CREATING A NEW MODEL
                         },
                         {
                             "field": "shoes",
-                            "required": true,
                             "type": "collection",
                             "member": {
                                 "type": "object",

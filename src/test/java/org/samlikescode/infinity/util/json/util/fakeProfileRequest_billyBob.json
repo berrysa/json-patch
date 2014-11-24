@@ -1,0 +1,8 @@
+{
+    "name": {
+        "first": "Billy",
+        "last": "Bob"
+    },
+    "email": "billy@email.com",
+    "active": true
+}

@@ -8,6 +8,8 @@ import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 public class CustomObjectMapper extends ObjectMapper {
+    public static final CustomObjectMapper INSTANCE = new CustomObjectMapper();
+
     public CustomObjectMapper() {
         super();
         configure();

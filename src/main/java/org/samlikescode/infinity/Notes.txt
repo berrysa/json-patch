@@ -678,3 +678,6 @@ API RULES
     - any successful POST will return 201 with a Location
     - PATCH operations follow RFC 6902
     - Only supports JSON
+-------
+JVM Experimenting:
+- JDK 1.8 alone: 9848 recurse() method calls

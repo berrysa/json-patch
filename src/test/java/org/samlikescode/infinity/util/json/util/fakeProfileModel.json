@@ -1,0 +1,59 @@
+{
+    "name": "profile",
+    "fields": [
+        {
+            "field": "name",
+            "type": "object",
+            "fields": [
+                {
+                    "field": "first",
+                    "required": true,
+                    "regex": "^\\w"
+                },
+                {
+                    "field": "last",
+                    "required": false,
+                    "regex": "^\\w"
+                }
+            ]
+        },
+        {
+            "field": "email",
+            "required": true,
+            "regex": "^[_a-z0-9-]+(\\.[_a-z0-9-]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)*(\\.[a-z]{2,4})$"
+        },
+        {
+            "field": "favoriteShoe",
+            "required": false
+        },
+        {
+            "field": "shoeSize",
+            "required": false,
+            "type": "number"
+        },
+        {
+            "field": "shoes",
+            "required": true,
+            "type": "collection",
+            "member": {
+                "type": "object",
+                "fields": [
+                    {
+                        "field": "brand",
+                        "regex": "^\\w$"
+                    },
+                    {
+                        "field": "size",
+                        "required": true,
+                        "type": "number"
+                    }
+                ]
+            }
+        },
+        {
+            "field": "active",
+            "required": true,
+            "type": "boolean"
+        }
+    ]
+}
